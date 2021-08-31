@@ -6,7 +6,7 @@
   "description": "Use the right tool, or else!",
   "authors": [
     "AmyMialee (Original mod)",
-    "Distant (1.12.2 backport)"
+    "Distant (1.8.9 backport)"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/tool-pop",
@@ -24,8 +24,8 @@
     "toolpop.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.2",
-    "minecraft": "1.12.x"
+    "fabricloader": ">=0.11.1",
+    "minecraft": "1.8.x"
   },
   "custom": {
     "modmenu": {
