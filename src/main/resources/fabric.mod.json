@@ -5,7 +5,8 @@
   "name": "Tool Pop",
   "description": "Use the right tool, or else!",
   "authors": [
-    "AmyMialee"
+    "AmyMialee (Original mod)",
+    "Distant (1.12.2 backport)"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/tool-pop",
@@ -24,15 +25,9 @@
   ],
   "depends": {
     "fabricloader": ">=0.11.2",
-    "fabric": "*",
-    "minecraft": "1.16.5"
+    "minecraft": "1.12.x"
   },
   "custom": {
-    "modupdater": {
-      "strategy": "curseforge",
-      "projectID": 453373,
-      "strict": false
-    },
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.gg/P4dUsxv6An"

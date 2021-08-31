@@ -1,12 +1,15 @@
 package amymialee.toolpop;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
+public class ToolPopConfig {
+    public boolean instantKill;
+    public boolean explode;
+    public boolean includeTallGrass;
+    public int incorrectBreakCap;
 
-@Config(name = "toolpop")
-public class ToolPopConfig implements ConfigData {
-    public boolean instantKill = true;
-    public boolean explode = false;
-    public boolean includeTallGrass = false;
-    public int incorrectBreakCap = 5;
+    public ToolPopConfig(boolean iK, boolean e, boolean iTG, int iBC) {
+        this.instantKill = iK;
+        this.explode = e;
+        this.includeTallGrass = iTG;
+        this.incorrectBreakCap = iBC;
+    }
 }

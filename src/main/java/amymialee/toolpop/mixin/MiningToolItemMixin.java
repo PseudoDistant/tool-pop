@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
@@ -13,7 +14,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.SilverfishEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.tag.BlockTags;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -30,21 +31,21 @@ import java.util.Set;
 
 @Mixin(MiningToolItem.class)
 public class MiningToolItemMixin {
-    @Shadow @Final private Set<Block> effectiveBlocks;
+    @Shadow @Final private Set<Block> field_22946;
 
     int popCount = 0;
     private void popUp(LivingEntity miner, BlockState state, World world) {
         if (miner instanceof PlayerEntity &&
                 (ToolPop.configGet.includeTallGrass ||
-                        (state.getBlock().getBlastResistance() != 0 && !ToolPop.configGet.includeTallGrass))) {
+                        (state.getBlock().getBlastResistance(miner) != 0 && !ToolPop.configGet.includeTallGrass))) {
             popCount = ((PlayerEntityWrapper) miner).getPopAmount();
             if (popCount >= ToolPop.configGet.incorrectBreakCap - 1) {
                 ((PlayerEntity) miner).sendMessage(new LiteralText("Someone forgot to switch tools!"), false);
                 if (ToolPop.configGet.explode) {
                     try {
-                        TntEntity tnt = EntityType.TNT.create(world);
+                        TntEntity tnt = new TntEntity(world);
                         assert tnt != null;
-                        tnt.refreshPositionAndAngles(miner.getX() + 0.5D, miner.getY(), miner.getZ() + 0.5D, 0.0F, 0.0F);
+                        tnt.refreshPositionAndAngles(miner.x + 0.5D, miner.y, miner.z + 0.5D, 0.0F, 0.0F);
                         world.spawnEntity(tnt);
                         tnt.setFuse(0);
                     } catch (Exception ignored) {
@@ -62,7 +63,7 @@ public class MiningToolItemMixin {
     }
 
     private void popDown(LivingEntity miner, BlockState state) {
-        if (miner instanceof PlayerEntity && state.getBlock().getBlastResistance() != 0) {
+        if (miner instanceof PlayerEntity && state.getBlock().getBlastResistance(miner) != 0) {
             ((PlayerEntityWrapper) miner).setPopAmount(0);
         }
     }
@@ -84,10 +85,8 @@ public class MiningToolItemMixin {
             }
         } else if (stack.getItem() instanceof AxeItem) {
             if (material != Material.WOOD
-                    && material != Material.NETHER_WOOD
                     && material != Material.PLANT
                     && material != Material.REPLACEABLE_PLANT
-                    && material != Material.BAMBOO
                     && material != Material.GOURD) {
                 popUp(miner, state, world);
             } else {
@@ -95,13 +94,13 @@ public class MiningToolItemMixin {
             }
         } else if (stack.getItem() instanceof ShovelItem ||
                 stack.getItem() instanceof HoeItem) {
-            if (!effectiveBlocks.contains(state.getBlock())) {
+            if (!field_22946.contains(state.getBlock())) {
                 popUp(miner, state, world);
             } else {
                 popDown(miner, state);
             }
         } else if (stack.getItem() instanceof ShearsItem) {
-            if (!state.isOf(Blocks.COBWEB) && !state.isIn(BlockTags.LEAVES)) {
+            if (state.getBlock() != Blocks.COBWEB && state.getBlock() != Blocks.LEAVES) {
                 popUp(miner, state, world);
             } else {
                 popDown(miner, state);
